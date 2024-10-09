@@ -1,5 +1,6 @@
 package it2c.geonzon.bdcis;
 
+import static com.oracle.util.Checksums.update;
 import java.util.Scanner;
 
 public class IT2CGEONZONBDCIS {
@@ -8,10 +9,11 @@ public class IT2CGEONZONBDCIS {
    public void addCitizen(){
         Scanner sc = new Scanner(System.in);
         config conf = new config();
+        
         System.out.print("Citizen First Name: ");
         String fname = sc.next();
         System.out.print("Citizen Last Name: ");
-        String lname = sc.next();
+        String lname = sc.next();  
         System.out.print("Citizen Contact Num: ");
         String contnum= sc.next();
         System.out.print("Citizen Age : ");
@@ -30,7 +32,61 @@ public class IT2CGEONZONBDCIS {
         conf.addCitizen(sql, fname, lname, contnum, age, gender, purok);
         
     }
+    private void viewCitizen() {
+        String IT2CGEONZONBDCISQuery = "SELECT * FROM citizens";
+        String[] IT2CGEONZONBDCISHeaders = {"ID", "First_Name", "Last_Name", "ContNum", "Age", "Gender", "Purok"};
+        String[] IT2CGEONZONBDCISColumns = {"id", "fname", "lname", "contnum", "age", "gender", "purok"};
+
+        config conf = new config ();
+        conf.viewCitizen(IT2CGEONZONBDCISQuery, IT2CGEONZONBDCISHeaders, IT2CGEONZONBDCISColumns);
+    }    
+    private void updateCitizen() {
+        Scanner sc = new Scanner (System.in);
         
+        System.out.println("Enter Citizen ID: ");
+        int id = sc.nextInt();
+        System.out.println("\n");
+        
+        System.out.println("Enter new First Name: ");
+        String uptfname = sc.next();
+        
+        System.out.println("Enter new Last Name: ");
+        String uptlname = sc.next();
+        
+        System.out.println("Enter new Contact Num: ");
+        String uptcontnum = sc.next();
+        
+        System.out.println("Enter new Age: ");
+        String uptage = sc.next();
+        
+        System.out.println("Enter new Gender: ");
+        String uptgender = sc.next();
+        
+        System.out.println("Enter new Purok: ");
+        String uptpurok = sc.next();
+        
+        
+        String sqlUpdate = "UPDATE students SET name = ? WHERE id = ?";
+
+        config cf = new config();
+        cf.updateRecord(sqlUpdate, uptfname, uptlname, uptcontnum, uptage, uptgender, uptpurok);    
+      
+      
+    }
+    
+    private void deleteCitizen() {
+       Scanner sc = new Scanner (System.in);
+       
+        System.out.println("Enter Citizen ID to delete: ");
+        int id = sc.nextInt();
+        
+        String delete = "DELETE FROM citizen Where id = ";
+        config cf = new config();
+        cf.deleteCitizen(delete, id);
+        
+      
+    }
+    
      public static void main (String [] args) {
          
          Scanner sc = new Scanner (System.in);
@@ -50,12 +106,27 @@ public class IT2CGEONZONBDCIS {
         System.out.print("Enter Action: ");
         int act = sc.nextInt();
             
-        
+          IT2CGEONZONBDCIS ap = new IT2CGEONZONBDCIS();
         switch (act){
             case 1:
-                IT2CGEONZONBDCIS ap = new IT2CGEONZONBDCIS();
                 ap.addCitizen();
             break;
+            case 2:
+                ap.viewCitizen();
+            break;
+            case 3:
+                ap.viewCitizen();
+                ap.updateCitizen();
+            break;
+            case 4:
+                 ap.viewCitizen();
+                 ap.deleteCitizen();
+                 ap.viewCitizen();
+                 break;
+            case 5:
+                System.out.println("Exiting...");
+                
+                 
         }
         
         System.out.println("Do you wamt to comtimue? (yes/no): ");
