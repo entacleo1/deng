@@ -1,12 +1,65 @@
-package it2c.geonzon.bdcis;
 
-import static com.oracle.util.Checksums.update;
+package CITIZEN;
+
+import it2c.geonzon.bdcism.IT2CGEONZONBDCIS;
+import it2c.geonzon.bdcism.config;
 import java.util.Scanner;
 
-public class IT2CGEONZONBDCIS {
 
-  
-   public void addCitizen(){
+public class citizen {
+    
+   public void citizenTrans() {
+         
+         Scanner sc = new Scanner (System.in);
+         
+         String response;
+         
+    do{
+        System.out.println("Welcome to Grading App");
+        System.out.println("-------------------------------------");
+        System.out.println("1. ADD");
+        System.out.println("2. VIEW");
+        System.out.println("3. UPDATE");
+        System.out.println("4. DELETE");
+        System.out.println("5. EXIT");
+        System.out.println("-------------------------------------");
+
+        System.out.print("Enter Action: ");
+        int act = sc.nextInt();
+            citizen ap = new citizen();
+        switch (act){
+            case 1:
+                ap.addCitizen();
+            break;
+            case 2:
+                ap.viewCitizen();
+            break;
+            case 3:
+                ap.viewCitizen();
+                ap.updateCitizen();
+            break;
+            case 4:
+                 ap.viewCitizen();
+                 ap.deleteCitizen();
+                 ap.viewCitizen();
+                 break;
+            case 5:
+                System.out.println("Exiting...");
+                
+                 
+        }
+        
+        System.out.println("Do you wamt to comtimue? (yes/no): ");
+        response = sc.next();
+        
+    } while(response.equals("yes"));
+         System.out.println("Thank you, See you! ");
+         
+     }
+    
+    
+    
+     public void addCitizen(){
         Scanner sc = new Scanner(System.in);
         config conf = new config();
         
@@ -87,59 +140,5 @@ public class IT2CGEONZONBDCIS {
       
     }
     
-     public static void main (String [] args) {
-         
-         Scanner sc = new Scanner (System.in);
-         
-         String response;
-         
-    do{
-        System.out.println("Welcome to Grading App");
-        System.out.println("-------------------------------------");
-        System.out.println("1. ADD");
-        System.out.println("2. VIEW");
-        System.out.println("3. UPDATE");
-        System.out.println("4. DELETE");
-        System.out.println("5. EXIT");
-        System.out.println("-------------------------------------");
-
-        System.out.print("Enter Action: ");
-        int act = sc.nextInt();
-            
-          IT2CGEONZONBDCIS ap = new IT2CGEONZONBDCIS();
-        switch (act){
-            case 1:
-                ap.addCitizen();
-            break;
-            case 2:
-                ap.viewCitizen();
-            break;
-            case 3:
-                ap.viewCitizen();
-                ap.updateCitizen();
-            break;
-            case 4:
-                 ap.viewCitizen();
-                 ap.deleteCitizen();
-                 ap.viewCitizen();
-                 break;
-            case 5:
-                System.out.println("Exiting...");
-                
-                 
-        }
-        
-        System.out.println("Do you wamt to comtimue? (yes/no): ");
-        response = sc.next();
-        
-    } while(response.equals("yes"));
-         System.out.println("Thank you, See you! ");
-         
-     }
-         
-
-
+     
 }
-
-
-

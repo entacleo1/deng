@@ -1,4 +1,4 @@
-package it2c.geonzon.bdcis;
+package it2c.geonzon.bdcism;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
