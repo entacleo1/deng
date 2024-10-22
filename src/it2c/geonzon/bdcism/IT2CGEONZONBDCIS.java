@@ -43,7 +43,7 @@ public class IT2CGEONZONBDCIS {
                  
         }
         
-        System.out.println("Do you wamt to comtimue? (yes/no): ");
+        System.out.println("Do you want to continue? (yes/no): ");
         response = sc.next();
         
     } while(response.equals("yes"));

@@ -15,7 +15,7 @@ public class citizen {
          String response;
          
     do{
-        System.out.println("Welcome to Grading App");
+        System.out.println("Welcome to Barangay Citizen & Document Request Status");
         System.out.println("-------------------------------------");
         System.out.println("1. ADD");
         System.out.println("2. VIEW");
@@ -49,7 +49,7 @@ public class citizen {
                  
         }
         
-        System.out.println("Do you wamt to comtimue? (yes/no): ");
+        System.out.println("Do you want to continue? (yes/no): ");
         response = sc.next();
         
     } while(response.equals("yes"));
@@ -65,14 +65,19 @@ public class citizen {
         
         System.out.print("Citizen First Name: ");
         String fname = sc.next();
+        
         System.out.print("Citizen Last Name: ");
-        String lname = sc.next();  
+        String lname = sc.next(); 
+        
         System.out.print("Citizen Contact Num: ");
         String contnum= sc.next();
+        
         System.out.print("Citizen Age : ");
         String age = sc.next();
+        
         System.out.println("Citizen Gender: ");
         String gender = sc.next();
+        
         System.out.print("Citizen Purok : ");
         String purok = sc.next();
        
