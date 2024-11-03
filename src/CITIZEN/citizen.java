@@ -7,15 +7,14 @@ import java.util.Scanner;
 
 
 public class citizen {
-    
+       Scanner sc = new Scanner (System.in);
+       config conf = new config();
    public void citizenTrans() {
          
-         Scanner sc = new Scanner (System.in);
-         
-         String response;
+        boolean res = true;
          
     do{
-        System.out.println("Welcome to Barangay Citizen & Document Request Status");
+        System.out.println("Citizen");
         System.out.println("-------------------------------------");
         System.out.println("1. ADD");
         System.out.println("2. VIEW");
@@ -44,105 +43,122 @@ public class citizen {
                  ap.viewCitizen();
                  break;
             case 5:
-                System.out.println("Exiting...");
-                
-                 
+               res = false;
+                break;
+            default:
+                System.out.println("INVALID OPTION");
+                break;
         }
         
-        System.out.println("Do you want to continue? (yes/no): ");
-        response = sc.next();
-        
-    } while(response.equals("yes"));
-         System.out.println("Thank you, See you! ");
-         
+    } while(res);
      }
     
-    
-    
      public void addCitizen(){
-        Scanner sc = new Scanner(System.in);
-        config conf = new config();
-        
+      
         System.out.print("Citizen First Name: ");
         String fname = sc.next();
         
         System.out.print("Citizen Last Name: ");
         String lname = sc.next(); 
         
-        System.out.print("Citizen Contact Num: ");
-        String contnum= sc.next();
-        
-        System.out.print("Citizen Age : ");
-        String age = sc.next();
-        
-        System.out.println("Citizen Gender: ");
+        String contnum;
+        while (true) {
+            System.out.print("Citizen Contact Num (11 digits): ");
+            contnum = sc.next();
+            if (contnum.matches("\\d{11}")) {
+                break;
+            } else {
+                System.out.println("Invalid contact number. Must be 11 digits and numeric.");
+            }
+        }
+
+        String age;
+        while (true) {
+            System.out.print("Citizen Age: ");
+            age = sc.next();
+            if (age.matches("\\d+")) { 
+                break;
+            } else {
+                System.out.println("Invalid age. Must be a number.");
+            }
+        }
+        System.out.print("Citizen Gender: ");
         String gender = sc.next();
         
         System.out.print("Citizen Purok : ");
         String purok = sc.next();
        
-        
-
-        String sql = "INSERT INTO Citizen (First_Name, Last_Name, ContactNum, Age, Gender, Purok)"
+        String sql = "INSERT INTO tbl_citizen (f_name,l_name,contact,age,gender,purok)"
                 + " VALUES (?, ?, ?, ?, ?, ?)";
 
-
-        conf.addCitizen(sql, fname, lname, contnum, age, gender, purok);
-        
+        conf.add(sql, fname, lname, contnum, age, gender, purok);
+       
     }
-    private void viewCitizen() {
-        String IT2CGEONZONBDCISQuery = "SELECT * FROM citizens";
+     
+    public void viewCitizen() {
+        String IT2CGEONZONBDCISQuery = "SELECT * FROM tbl_citizen";
         String[] IT2CGEONZONBDCISHeaders = {"ID", "First_Name", "Last_Name", "ContNum", "Age", "Gender", "Purok"};
-        String[] IT2CGEONZONBDCISColumns = {"id", "fname", "lname", "contnum", "age", "gender", "purok"};
+        String[] IT2CGEONZONBDCISColumns = {"ctzn_id", "f_name", "l_name", "contact", "age", "gender", "purok"};
 
-        config conf = new config ();
-        conf.viewCitizen(IT2CGEONZONBDCISQuery, IT2CGEONZONBDCISHeaders, IT2CGEONZONBDCISColumns);
+        conf.view(IT2CGEONZONBDCISQuery, IT2CGEONZONBDCISHeaders, IT2CGEONZONBDCISColumns);
     }    
+    
     private void updateCitizen() {
-        Scanner sc = new Scanner (System.in);
-        
-        System.out.println("Enter Citizen ID: ");
+
+        System.out.print("Enter Citizen ID: ");
         int id = sc.nextInt();
         System.out.println("\n");
         
-        System.out.println("Enter new First Name: ");
+        System.out.print("Enter new First Name: ");
         String uptfname = sc.next();
         
-        System.out.println("Enter new Last Name: ");
+        System.out.print("Enter new Last Name: ");
         String uptlname = sc.next();
         
-        System.out.println("Enter new Contact Num: ");
-        String uptcontnum = sc.next();
+       String uptcontnum;
+        while (true) {
+            System.out.print("Enter New Citizen Contact Num (11 digits): ");
+            uptcontnum = sc.next();
+            if (uptcontnum.matches("\\d{11}")) {
+                break;
+            } else {
+                System.out.println("Invalid contact number. Must be 11 digits and numeric.");
+            }
+        }
+
+        String uptage;
+        while (true) {
+            System.out.print("Enter New Citizen Age: ");
+            uptage = sc.next();
+            if (uptage.matches("\\d+")) { 
+                break;
+            } else {
+                System.out.println("Invalid age. Must be a number.");
+            }
+        }
         
-        System.out.println("Enter new Age: ");
-        String uptage = sc.next();
-        
-        System.out.println("Enter new Gender: ");
+        System.out.print("Enter new Gender: ");
         String uptgender = sc.next();
         
-        System.out.println("Enter new Purok: ");
+        System.out.print("Enter new Purok: ");
         String uptpurok = sc.next();
         
         
-        String sqlUpdate = "UPDATE students SET name = ? WHERE id = ?";
+        String sqlUpdate = "UPDATE tbl_citizen SET f_name = ?, l_name = ?,contact = ?, age = ?,gender = ?,purok = ? WHERE ctzn_id = ?";
 
-        config cf = new config();
-        cf.updateRecord(sqlUpdate, uptfname, uptlname, uptcontnum, uptage, uptgender, uptpurok);    
-      
-      
+        conf.update(sqlUpdate, uptfname, uptlname, uptcontnum, uptage, uptgender, uptpurok, id);
+        
     }
     
     private void deleteCitizen() {
        Scanner sc = new Scanner (System.in);
        
-        System.out.println("Enter Citizen ID to delete: ");
+        System.out.print("Enter Citizen ID to delete: ");
         int id = sc.nextInt();
         
-        String delete = "DELETE FROM citizen Where id = ";
-        config cf = new config();
-        cf.deleteCitizen(delete, id);
+        String delete = "DELETE FROM tbl_citizen Where ctzn_id = ? ";
+        conf.delete(delete, id);
         
-      
     }
     
      

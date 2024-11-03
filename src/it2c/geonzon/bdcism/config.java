@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class config {
 
@@ -12,14 +13,14 @@ public class config {
         Connection con = null;
         try {
             Class.forName("org.sqlite.JDBC"); // Load the SQLite JDBC driver
-            con = DriverManager.getConnection("jdbc:sqlite:IT2C-GEONZON-BDCIS.db"); // Establish connection
-            System.out.println("Connection Successful");
+            con = DriverManager.getConnection("jdbc:sqlite:bcdis_db.db"); // Establish connection
+            System.out.println("\n");
         } catch (Exception e) {
             System.out.println("Connection Failed: " + e);
         }
         return con;
     }
-     public void addCitizen(String sql, String... values) {
+     public void add(String sql, String... values) {
         try (Connection conn = this.connectDB();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -35,7 +36,7 @@ public class config {
         }
     }
 
-    public void viewCitizen(String sqlQuery, String[] columnHeaders, String[] columnNames) {
+    public void view(String sqlQuery, String[] columnHeaders, String[] columnNames) {
         // Check that columnHeaders and columnNames arrays are the same length
         if (columnHeaders.length != columnNames.length) {
             System.out.println("Error: Mismatch between column headers and column names.");
@@ -48,11 +49,11 @@ public class config {
 
             // Print the headers dynamically
             StringBuilder headerLine = new StringBuilder();
-            headerLine.append("--------------------------------------------------------------------------------\n| ");
+            headerLine.append("---------------------------------------------------------------------------------------------------------------\n| ");
             for (String header : columnHeaders) {
                 headerLine.append(String.format("%-20s | ", header)); // Adjust formatting as needed
             }
-            headerLine.append("\n--------------------------------------------------------------------------------");
+            headerLine.append("\n---------------------------------------------------------------------------------------------------------------");
 
             System.out.println(headerLine.toString());
 
@@ -65,13 +66,13 @@ public class config {
                 }
                 System.out.println(row.toString());
             }
-            System.out.println("--------------------------------------------------------------------------------");
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
 
         } catch (SQLException e) {
             System.out.println("Error retrieving records: " + e.getMessage());
         }
     }
-     public void updateRecord(String sql, Object... values) {
+     public void update(String sql, Object... values) {
         try (Connection conn = this.connectDB(); // Use the connectDB method
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -107,7 +108,7 @@ public class config {
 }
      
 // Add this method in the config class
-public void deleteCitizen(String sql, Object... values) {
+public void delete(String sql, Object... values) {
     try (Connection conn = this.connectDB();
          PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -126,5 +127,93 @@ public void deleteCitizen(String sql, Object... values) {
         System.out.println("Error deleting record: " + e.getMessage());
     }
     }
+    
+    //citizen id  checker
+   public boolean citIdExists(String citizenId) {
+    String sql = "SELECT COUNT(*) FROM tbl_citizen WHERE ctzn_id = ?";
+    try (Connection conn = connectDB();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setString(1, citizenId);
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0; 
+        }
+    } catch (SQLException e) {
+        System.out.println("Error checking citizen ID: " + e.getMessage());
+    }
+    return false; 
+}
+   //request id checker
+   public boolean reqIdExists(String requestId) {
+    String sql = "SELECT COUNT(*) FROM tbl_request WHERE req_id = ?";
+    try (Connection conn = connectDB();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setString(1, requestId);
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error checking request ID: " + e.getMessage());
+    }
+    return false; 
+}
+
+public ResultSet getData(String sql) {
+    ResultSet rst = null;
+    try {
+        Connection conn = connectDB();
+        Statement stmt = conn.createStatement();
+        rst = stmt.executeQuery(sql);
+    } catch (SQLException e) {
+        System.out.println("Error retrieving data: " + e.getMessage());
+    }
+    return rst;
+}
+
+public void upnotif(String requestId, String status) {
+    String updateQuery = "UPDATE tbl_request SET req_status = ? WHERE req_id = ?";
+    String selectQuery = "SELECT * FROM tbl_request r INNER JOIN tbl_citizen z ON r.ctzn_id  = z.ctzn_id WHERE req_id = ?";
+    String insertQuery = "INSERT INTO tbl_notif (logs) VALUES (?)";
+
+    try (Connection conn = connectDB();
+         PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+         PreparedStatement selectStmt = conn.prepareStatement(selectQuery);
+         PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+
+        conn.setAutoCommit(false);
+
+        selectStmt.setString(1, requestId);
+        ResultSet rs = selectStmt.executeQuery();
+
+        String docType = null;
+        String fname = null;
+        String lname = null;
+        if (rs.next()) {
+            docType = rs.getString("doc_type");
+            fname = rs.getString("f_name");
+            lname = rs.getString("l_name");
+        }
+
+        updateStmt.setString(1, status);
+        updateStmt.setString(2, requestId);
+        updateStmt.executeUpdate();
+
+        String reqq = "Your Document Request ID " + requestId + " '" + docType + "' "+ "of "+ fname +" "+lname + " has been " + status;
+
+        insertStmt.setString(1, reqq);
+        insertStmt.executeUpdate();
+
+        conn.commit();
+        System.out.println("Updated Succesfuly \n");
+    } catch (SQLException e) {
+        System.out.println("Error during transaction: " + e.getMessage());
+     
+    }
+}
+
 
 }
+
+
+
